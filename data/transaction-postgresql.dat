@@ -1,0 +1,196 @@
+[INFO] Scanning for projects...
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] YCSB Root                                                          [pom]
+[INFO] Core YCSB                                                          [jar]
+[INFO] Per Datastore Binding descriptor                                   [jar]
+[INFO] YCSB Datastore Binding Parent                                      [pom]
+[INFO] JDBC DB Binding                                                    [jar]
+[INFO] 
+[INFO] ---------------------------< site.ycsb:root >---------------------------
+[INFO] Building YCSB Root 0.18.0-SNAPSHOT                                 [1/5]
+[INFO]   from pom.xml
+[INFO] --------------------------------[ pom ]---------------------------------
+[INFO] 
+[INFO] --- enforcer:3.0.0-M1:enforce (enforce-maven) @ root ---
+[INFO] 
+[INFO] --- checkstyle:2.16:check (validate) @ root ---
+[INFO] 
+[INFO] --- dependency:3.7.0:list (default-cli) @ root ---
+[INFO] 
+[INFO] ---------------------------< site.ycsb:core >---------------------------
+[INFO] Building Core YCSB 0.18.0-SNAPSHOT                                 [2/5]
+[INFO]   from core/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- enforcer:3.0.0-M1:enforce (enforce-maven) @ core ---
+[INFO] 
+[INFO] --- checkstyle:2.16:check (validate) @ core ---
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ core ---
+[INFO] Copying 1 resource from src/main/resources to target/classes
+[INFO] The encoding used to copy filtered properties files have not been set. This means that the same encoding will be used to copy filtered properties files as when copying other filtered resources. This might not be what you want! Run your build with --debug to see which files might be affected. Read more at https://maven.apache.org/plugins/maven-resources-plugin/examples/filtering-properties-files.html
+[INFO] 
+[INFO] --- compiler:3.7.0:compile (default-compile) @ core ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 63 source files to /app/core/target/classes
+[INFO] /app/core/src/main/java/site/ycsb/Client.java: Some input files use or override a deprecated API.
+[INFO] /app/core/src/main/java/site/ycsb/Client.java: Recompile with -Xlint:deprecation for details.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ core ---
+[INFO] skip non existing resourceDirectory /app/core/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.7.0:testCompile (default-testCompile) @ core ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- surefire:3.2.5:test (default-test) @ core ---
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- jar:3.4.1:jar (default-jar) @ core ---
+[INFO] Building jar: /app/core/target/core-0.18.0-SNAPSHOT.jar
+[INFO] 
+[INFO] --- dependency:3.7.0:list (default-cli) @ core ---
+[INFO] Can't extract module name from htrace-core4-4.1.0-incubating.jar: Provider class com.fasterxml.jackson.core.JsonFactory not in JAR file htrace-core4-4.1.0-incubating.jar
+[INFO] 
+[INFO] --------------< site.ycsb:datastore-specific-descriptor >---------------
+[INFO] Building Per Datastore Binding descriptor 0.18.0-SNAPSHOT          [3/5]
+[INFO]   from binding-parent/datastore-specific-descriptor/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- enforcer:3.0.0-M1:enforce (enforce-maven) @ datastore-specific-descriptor ---
+[INFO] 
+[INFO] --- checkstyle:2.16:check (validate) @ datastore-specific-descriptor ---
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ datastore-specific-descriptor ---
+[INFO] Copying 1 resource from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.7.0:compile (default-compile) @ datastore-specific-descriptor ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ datastore-specific-descriptor ---
+[INFO] skip non existing resourceDirectory /app/binding-parent/datastore-specific-descriptor/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.7.0:testCompile (default-testCompile) @ datastore-specific-descriptor ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- surefire:3.2.5:test (default-test) @ datastore-specific-descriptor ---
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- jar:3.4.1:jar (default-jar) @ datastore-specific-descriptor ---
+[INFO] 
+[INFO] --- dependency:3.7.0:list (default-cli) @ datastore-specific-descriptor ---
+[INFO] Can't extract module name from htrace-core4-4.1.0-incubating.jar: Provider class com.fasterxml.jackson.core.JsonFactory not in JAR file htrace-core4-4.1.0-incubating.jar
+[INFO] 
+[INFO] ----------------------< site.ycsb:binding-parent >----------------------
+[INFO] Building YCSB Datastore Binding Parent 0.18.0-SNAPSHOT             [4/5]
+[INFO]   from binding-parent/pom.xml
+[INFO] --------------------------------[ pom ]---------------------------------
+[INFO] 
+[INFO] --- enforcer:3.0.0-M1:enforce (enforce-maven) @ binding-parent ---
+[INFO] 
+[INFO] --- checkstyle:2.16:check (validate) @ binding-parent ---
+[INFO] 
+[INFO] --- dependency:2.10:copy-dependencies (stage-dependencies) @ binding-parent ---
+[INFO] 
+[INFO] --- dependency:2.10:list (default-cli) @ binding-parent ---
+[INFO] 
+[INFO] -----------------------< site.ycsb:jdbc-binding >-----------------------
+[INFO] Building JDBC DB Binding 0.18.0-SNAPSHOT                           [5/5]
+[INFO]   from jdbc/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- enforcer:3.0.0-M1:enforce (enforce-maven) @ jdbc-binding ---
+[INFO] 
+[INFO] --- checkstyle:2.16:check (validate) @ jdbc-binding ---
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ jdbc-binding ---
+[INFO] Copying 3 resources from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.7.0:compile (default-compile) @ jdbc-binding ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 9 source files to /app/jdbc/target/classes
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ jdbc-binding ---
+[INFO] skip non existing resourceDirectory /app/jdbc/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.7.0:testCompile (default-testCompile) @ jdbc-binding ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- surefire:3.2.5:test (default-test) @ jdbc-binding ---
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- jar:3.4.1:jar (default-jar) @ jdbc-binding ---
+[INFO] Building jar: /app/jdbc/target/jdbc-binding-0.18.0-SNAPSHOT.jar
+[INFO] 
+[INFO] --- dependency:2.10:copy-dependencies (stage-dependencies) @ jdbc-binding ---
+[INFO] org.apache.geronimo.specs:geronimo-jta_1.1_spec:jar:1.1.1 already exists in destination.
+[INFO] net.sourceforge.serp:serp:jar:1.13.1 already exists in destination.
+[INFO] org.apache.openjpa:openjpa-jdbc:jar:2.1.1 already exists in destination.
+[INFO] org.apache.openjpa:openjpa-lib:jar:2.1.1 already exists in destination.
+[INFO] commons-pool:commons-pool:jar:1.5.4 already exists in destination.
+[INFO] org.apache.geronimo.specs:geronimo-jms_1.1_spec:jar:1.1.1 already exists in destination.
+[INFO] org.apache.openjpa:openjpa-kernel:jar:2.1.1 already exists in destination.
+[INFO] commons-collections:commons-collections:jar:3.2.1 already exists in destination.
+[INFO] commons-lang:commons-lang:jar:2.4 already exists in destination.
+[INFO] 
+[INFO] --- assembly:2.5.5:single (default) @ jdbc-binding ---
+[WARNING] The following patterns were never triggered in this artifact exclusion filter:
+o  '*:sources'
+
+[INFO] Building tar: /app/jdbc/target/ycsb-jdbc-binding-0.18.0-SNAPSHOT.tar.gz
+[INFO] 
+[INFO] --- dependency:2.10:list (default-cli) @ jdbc-binding ---
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary for YCSB Root 0.18.0-SNAPSHOT:
+[INFO] 
+[INFO] YCSB Root .......................................... SUCCESS [  1.561 s]
+[INFO] Core YCSB .......................................... SUCCESS [  2.455 s]
+[INFO] Per Datastore Binding descriptor ................... SUCCESS [  0.185 s]
+[INFO] YCSB Datastore Binding Parent ...................... SUCCESS [  0.383 s]
+[INFO] JDBC DB Binding .................................... SUCCESS [  1.137 s]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  6.182 s
+[INFO] Finished at: 2025-07-14T16:21:22Z
+[INFO] ------------------------------------------------------------------------
+Adding shard node URL: jdbc:postgresql://database:5432/ycsb?reWriteBatchedInserts=true
+Using shards: 1, batchSize:-1, fetchSize: -1
+[OVERALL], RunTime(ms), 20114
+[OVERALL], Throughput(ops/sec), 4971.661529283087
+[TOTAL_GCS_G1_Young_Generation], Count, 2
+[TOTAL_GC_TIME_G1_Young_Generation], Time(ms), 3
+[TOTAL_GC_TIME_%_G1_Young_Generation], Time(%), 0.014914984587849258
+[TOTAL_GCS_G1_Concurrent_GC], Count, 0
+[TOTAL_GC_TIME_G1_Concurrent_GC], Time(ms), 0
+[TOTAL_GC_TIME_%_G1_Concurrent_GC], Time(%), 0.0
+[TOTAL_GCS_G1_Old_Generation], Count, 0
+[TOTAL_GC_TIME_G1_Old_Generation], Time(ms), 0
+[TOTAL_GC_TIME_%_G1_Old_Generation], Time(%), 0.0
+[TOTAL_GCs], Count, 2
+[TOTAL_GC_TIME], Time(ms), 3
+[TOTAL_GC_TIME_%], Time(%), 0.014914984587849258
+[READ], Operations, 49649
+[READ], AverageLatency(us), 46.09367761687043
+[READ], MinLatency(us), 31
+[READ], MaxLatency(us), 15343
+[READ], 50thPercentileLatency(us), 42
+[READ], 95thPercentileLatency(us), 67
+[READ], 99thPercentileLatency(us), 97
+[READ], Return=OK, 49649
+[CLEANUP], Operations, 1
+[CLEANUP], AverageLatency(us), 358.0
+[CLEANUP], MinLatency(us), 358
+[CLEANUP], MaxLatency(us), 358
+[CLEANUP], 50thPercentileLatency(us), 358
+[CLEANUP], 95thPercentileLatency(us), 358
+[CLEANUP], 99thPercentileLatency(us), 358
+[UPDATE], Operations, 50351
+[UPDATE], AverageLatency(us), 344.52231336021134
+[UPDATE], MinLatency(us), 315
+[UPDATE], MaxLatency(us), 16159
+[UPDATE], 50thPercentileLatency(us), 337
+[UPDATE], 95thPercentileLatency(us), 384
+[UPDATE], 99thPercentileLatency(us), 432
+[UPDATE], Return=OK, 50351

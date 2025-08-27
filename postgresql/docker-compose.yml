@@ -1,0 +1,19 @@
+services:
+  database:
+    image: "postgres:latest"
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: ycsb
+    volumes:
+      - ${PWD}/init.sql:/docker-entrypoint-initdb.d/init.sql
+  workload:
+    build:
+      context: ../
+      dockerfile: ./postgresql/Dockerfile
+    volumes:
+      - ../data:/data
+    depends_on:
+      - database

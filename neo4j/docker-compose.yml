@@ -1,0 +1,18 @@
+services:
+  database:
+    build:
+      dockerfile: db.Dockerfile
+    ports:
+      - 7474:7474
+      - 7687:7687
+    environment:
+      NEO4J_AUTH: neo4j/adminadmin
+      NEO4J_PLUGINS: '["apoc"]'
+  workload:
+    build:
+      context: ../
+      dockerfile: ./neo4j/Dockerfile
+    volumes:
+      - ../data:/data
+    depends_on:
+      - database
