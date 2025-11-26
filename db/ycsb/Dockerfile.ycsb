@@ -1,0 +1,27 @@
+FROM maven:3.9.10-eclipse-temurin-21
+ENV YCSB_VERSION=0.17.0 \
+    PATH=${PATH}:/usr/bin
+
+WORKDIR /workload
+
+RUN apt-get update; \
+    apt-get install -y --no-install-recommends python-is-python3 \
+    && apt-get clean
+
+COPY ycsb/ ./
+
+RUN mvn -pl site.ycsb:neo4j-binding -am clean package
+
+ADD https://jdbc.postgresql.org/download/postgresql-42.7.7.jar ./postgresql-connector-java.jar
+
+CMD ["ls"]
+
+# Copy config and runner
+COPY db/ycsb/conf/ ./conf/
+COPY db/ycsb/run_workload.sh /run_workload.sh
+RUN chmod +x /run_workload.sh
+
+VOLUME ["/results"]
+
+ENTRYPOINT ["/run_workload.sh"]
+CMD []

@@ -19,9 +19,9 @@ RUN touch transaction-neo4j.dat
 # 1. the load phase needs to be ran at runtime, not build because otherwise it can't access the volume (therefore it's easier to have it a separate script rather than running all of it in the CMD statement)
 # 2. the transaction phase fails when run in the CMD statement - for some reason the command gets interpreted wrong
 
-COPY ./neo4j/workload.sh ./
-RUN chmod +x workload.sh
+COPY ./neo4j/ycsb_workload.sh ./
+RUN chmod +x ycsb_workload.sh
 
 COPY ./neo4j/db.properties ./
 
-CMD ["./workload.sh"]
+CMD ["./ycsb_workload.sh"]
