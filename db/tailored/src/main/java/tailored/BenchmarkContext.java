@@ -2,5 +2,22 @@
 
 package tailored;
 
-public class BenchmarkContext {
+import org.neo4j.driver.Driver;
+import reactor.util.annotation.Nullable;
+
+import java.sql.Connection;
+import java.util.Random;
+
+public final class BenchmarkContext {
+    public final BenchmarkConfig config;
+    @Nullable public final Connection pgConn;
+    @Nullable public final Driver neoDriver;
+    public final ThreadLocal<Random> random;
+
+    public BenchmarkContext(BenchmarkConfig config, Connection pgConn, Driver neoDriver) {
+        this.config = config;
+        this.pgConn = pgConn;
+        this.neoDriver = neoDriver;
+        this.random = ThreadLocal.withInitial(() -> new Random(123));
+    }
 }

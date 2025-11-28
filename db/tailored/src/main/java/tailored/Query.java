@@ -3,5 +3,5 @@
 package tailored;
 
 public interface Query {
-  void executeOnce(BenchmarkContext ctx) throws Exception;
+  void executeOnce(BenchmarkContext ctx, int iteration) throws Exception;
 }
