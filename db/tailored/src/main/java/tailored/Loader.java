@@ -119,9 +119,12 @@ public class Loader {
         ps.addBatch();
         if (++batchCount % batchSize == 0) {
           ps.executeBatch();
+          System.out.println("Batch " + ((batchCount - 1) / batchSize) + " completed");
         }
       }
       ps.executeBatch();
+      System.out.println("Batch " + ((batchCount) / batchSize) + " completed");
+
       String edgeSql = "INSERT INTO edges (start_id, end_id) VALUES (?, ?)";
       try (PreparedStatement ps2 = conn.prepareStatement(edgeSql);
            Stream<String> lines2 = Files.lines(edgesPath)) {
@@ -144,9 +147,11 @@ public class Loader {
 
           if (++batchCount2 % batchSize2 == 0) {
             ps2.executeBatch();
+            System.out.println("Batch " + ((batchCount2 - 1) / batchSize2) + " completed");
           }
         }
         ps2.executeBatch();
+        System.out.println("Batch " + ((batchCount2) / batchSize2) + " completed");
       }
 
       conn.commit();

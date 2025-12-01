@@ -16,13 +16,10 @@ import java.util.List;
 import java.util.Map;
 
 public class Reciprocal implements Workload {
-  private final BenchmarkContext ctx;
   private long[] startCandidateIds;
   private long[] endCandidateIds;
 
   public Reciprocal(BenchmarkContext ctx) throws Exception {
-    this.ctx = ctx;
-
     if (ctx.config.dbms() == Dbms.POSTGRES) {
       long[][] pairs = genPairsPostgres(ctx.pgConn, ctx.config.operations());
       this.startCandidateIds = pairs[0];
@@ -38,13 +35,13 @@ public class Reciprocal implements Workload {
   @Override
   public void executeOnce(BenchmarkContext ctx, int iteration) throws Exception {
     if (ctx.config.dbms() == Dbms.POSTGRES) {
-      executePostgres(iteration);
+      executePostgres(ctx, iteration);
     } else if (ctx.config.dbms() == Dbms.NEO4J) {
-      executeNeo4j(iteration);
+      executeNeo4j(ctx, iteration);
     }
   }
 
-  private void executePostgres(int iteration) throws Exception {
+  private void executePostgres(BenchmarkContext ctx, int iteration) throws Exception {
     String sql = """
         SELECT
           EXISTS (
@@ -71,7 +68,7 @@ public class Reciprocal implements Workload {
     }
   }
 
-  private void executeNeo4j(int iteration) throws Exception {
+  private void executeNeo4j(BenchmarkContext ctx, int iteration) throws Exception {
     String cypher = """
           MATCH (u:Person {id: $startId})-[:FRIENDS_WITH]->(v:Person {id: $endId}),
                 (v)-[:FRIENDS_WITH]->(u)
@@ -91,7 +88,7 @@ public class Reciprocal implements Workload {
   }
 
   private long[][] genPairsPostgres(Connection conn, int operations) throws Exception {
-    String sql = "SELECT DISTINCT id FROM nodes ORDER BY random() LIMIT " + operations * 2;
+    String sql = "SELECT start_id FROM (SELECT DISTINCT start_id FROM edges) as S ORDER BY random() LIMIT " + operations * 2;
 
     try (Statement st = conn.createStatement();
          ResultSet rs = st.executeQuery(sql)) {

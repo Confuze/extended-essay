@@ -26,13 +26,14 @@ public final class WorkloadRunner {
 
     List<Future<?>> futures = new ArrayList<>();
     for (int t = 0; t < threads; t++) {
+      BenchmarkContext threadCtx = ConnectionFactory.cloneForThread(ctx);
       int opsThis = base + (t < remainder ? 1 : 0);
       futures.add(exec.submit(() -> {
         for (int i = 0; i < opsThis; i++) {
           int idx = index.getAndIncrement();
           long start = System.nanoTime();
           try {
-            workload.executeOnce(ctx, idx);
+            workload.executeOnce(threadCtx, idx);
             succeeded.incrementAndGet();
           } catch (Exception e) {
             failed.incrementAndGet();

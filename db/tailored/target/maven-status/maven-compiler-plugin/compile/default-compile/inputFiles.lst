@@ -1,0 +1,16 @@
+/home/stefanz/Dev/extended-essay/db/tailored/src/main/java/tailored/BenchmarkConfig.java
+/home/stefanz/Dev/extended-essay/db/tailored/src/main/java/tailored/BenchmarkContext.java
+/home/stefanz/Dev/extended-essay/db/tailored/src/main/java/tailored/ConnectionFactory.java
+/home/stefanz/Dev/extended-essay/db/tailored/src/main/java/tailored/Dbms.java
+/home/stefanz/Dev/extended-essay/db/tailored/src/main/java/tailored/Loader.java
+/home/stefanz/Dev/extended-essay/db/tailored/src/main/java/tailored/Main.java
+/home/stefanz/Dev/extended-essay/db/tailored/src/main/java/tailored/ResultWriter.java
+/home/stefanz/Dev/extended-essay/db/tailored/src/main/java/tailored/RunResult.java
+/home/stefanz/Dev/extended-essay/db/tailored/src/main/java/tailored/Workload.java
+/home/stefanz/Dev/extended-essay/db/tailored/src/main/java/tailored/WorkloadFactory.java
+/home/stefanz/Dev/extended-essay/db/tailored/src/main/java/tailored/WorkloadRunner.java
+/home/stefanz/Dev/extended-essay/db/tailored/src/main/java/tailored/WorkloadType.java
+/home/stefanz/Dev/extended-essay/db/tailored/src/main/java/tailored/queries/Filtered.java
+/home/stefanz/Dev/extended-essay/db/tailored/src/main/java/tailored/queries/FriendOfFriend.java
+/home/stefanz/Dev/extended-essay/db/tailored/src/main/java/tailored/queries/Reciprocal.java
+/home/stefanz/Dev/extended-essay/db/tailored/src/main/java/tailored/queries/ShortestPath.java

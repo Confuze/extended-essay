@@ -1,0 +1,31 @@
+services:
+  postgres:
+    image: "postgres:latest"
+    ports:
+      - 5432:5432
+    profiles: ["postgres"]
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: tailored
+    volumes:
+      - ${PWD}/init.sql:/docker-entrypoint-initdb.d/init.sql
+  neo4j:
+    build:
+      dockerfile: db.Dockerfile
+    ports:
+      - 7474:7474
+      - 7687:7687
+    profiles: ["neo4j"]
+    environment:
+      NEO4J_AUTH: neo4j/adminadmin
+      NEO4J_PLUGINS: '["apoc"]'
+    volumes:
+      - ${PWD}/apoc.conf:/var/lib/neo4j/conf/apoc.conf
+  tailored:
+    build:
+      context: .
+      dockerfile: ./Dockerfile.tailored
+    env_file: .env
+    volumes:
+      - ./results:/results

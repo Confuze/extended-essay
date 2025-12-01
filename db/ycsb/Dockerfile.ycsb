@@ -14,8 +14,6 @@ RUN mvn -pl site.ycsb:neo4j-binding -am clean package
 
 ADD https://jdbc.postgresql.org/download/postgresql-42.7.7.jar ./postgresql-connector-java.jar
 
-CMD ["ls"]
-
 # Copy config and runner
 COPY db/ycsb/conf/ ./conf/
 COPY db/ycsb/run_workload.sh /run_workload.sh
@@ -24,4 +22,3 @@ RUN chmod +x /run_workload.sh
 VOLUME ["/results"]
 
 ENTRYPOINT ["/run_workload.sh"]
-CMD []

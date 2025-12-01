@@ -13,12 +13,9 @@ import java.util.List;
 import java.util.Map;
 
 public class FriendOfFriend implements Workload {
-    private final BenchmarkContext ctx;
     private long[] candidateIds;
 
     public FriendOfFriend(BenchmarkContext ctx) throws Exception {
-        this.ctx = ctx;
-
         if (ctx.config.dbms() == Dbms.POSTGRES) {
             this.candidateIds = genIdsPostgres(ctx.pgConn, ctx.config.operations());
         } else if (ctx.config.dbms() == Dbms.NEO4J) {
@@ -29,13 +26,13 @@ public class FriendOfFriend implements Workload {
     @Override
     public void executeOnce(BenchmarkContext ctx, int iteration) throws Exception {
         if (ctx.config.dbms() == Dbms.POSTGRES) {
-            executePostgres(iteration);
+            executePostgres(ctx, iteration);
         } else if (ctx.config.dbms() == Dbms.NEO4J) {
-            executeNeo4j(iteration);
+            executeNeo4j(ctx, iteration);
         }
     }
 
-    private void executePostgres(int iteration) throws Exception {
+    private void executePostgres(BenchmarkContext ctx, int iteration) throws Exception {
         String sql = """
             WITH RECURSIVE bfs AS (
                 SELECT
@@ -69,7 +66,7 @@ public class FriendOfFriend implements Workload {
         }
     }
 
-    private void executeNeo4j(int iteration) throws Exception {
+    private void executeNeo4j(BenchmarkContext ctx, int iteration) throws Exception {
         String cypher = """
                     MATCH p = (start:Person {id: $startId})-[:FRIENDS_WITH*1..5]->(fof)
                     WHERE length(p) = $depth
@@ -85,7 +82,7 @@ public class FriendOfFriend implements Workload {
     }
 
     private long[] genIdsPostgres(Connection conn, int operations) {
-        String sql = "SELECT DISTINCT start_id FROM edges ORDER BY random() LIMIT " + operations;
+        String sql = "SELECT start_id FROM (SELECT DISTINCT start_id FROM edges) as S ORDER BY random() LIMIT " + operations;
 
         try (Statement st = conn.createStatement();
              ResultSet rs = st.executeQuery(sql)) {
