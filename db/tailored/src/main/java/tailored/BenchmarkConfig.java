@@ -1,8 +1,8 @@
-// record with all config options passed via arguments + env vars
-
 package tailored;
 
 import reactor.util.annotation.Nullable;
+
+import java.nio.file.Path;
 
 public record BenchmarkConfig (
     Dbms dbms,
@@ -10,7 +10,7 @@ public record BenchmarkConfig (
     int depth,
     int operations,
     int threads,
-    @Nullable String outputPath,
+    @Nullable Path outputPath,
     @Nullable String pgUrl,
     @Nullable String pgUser,
     @Nullable String pgPassword,
@@ -23,8 +23,7 @@ public record BenchmarkConfig (
                            int depth,
                            int operations,
                            int threads,
-                           String outputPath) {
-
+                           Path outputPath) {
 
         String pgUri = System.getenv("PG_URI");
         String pgUser = System.getenv("PG_USER");

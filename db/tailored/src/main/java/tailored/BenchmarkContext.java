@@ -6,9 +6,10 @@ import org.neo4j.driver.Driver;
 import reactor.util.annotation.Nullable;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Random;
 
-public final class BenchmarkContext {
+public final class BenchmarkContext implements AutoCloseable {
     public final BenchmarkConfig config;
     @Nullable public final Connection pgConn;
     @Nullable public final Driver neoDriver;
@@ -19,5 +20,17 @@ public final class BenchmarkContext {
         this.pgConn = pgConn;
         this.neoDriver = neoDriver;
         this.random = ThreadLocal.withInitial(() -> new Random(123));
+    }
+
+    @Override
+    public void close() throws Exception {
+        if (pgConn != null)
+            try {
+                pgConn.close();
+            } catch (SQLException e) {
+                throw new RuntimeException("Failed to close PostgreSQL connection", e);
+            }
+        else if (neoDriver != null)
+            neoDriver.close();
     }
 }
