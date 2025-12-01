@@ -2,6 +2,6 @@
 
 package tailored;
 
-public interface Query {
+public interface Workload {
   void executeOnce(BenchmarkContext ctx, int iteration) throws Exception;
 }

@@ -5,15 +5,15 @@ import org.neo4j.driver.EagerResult;
 import org.neo4j.driver.QueryConfig;
 import tailored.BenchmarkContext;
 import tailored.Dbms;
-import tailored.Query;
+import tailored.Workload;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class FriendOfFriend implements Query {
-    private BenchmarkContext ctx;
+public class FriendOfFriend implements Workload {
+    private final BenchmarkContext ctx;
     private long[] candidateIds;
 
     public FriendOfFriend(BenchmarkContext ctx) throws Exception {
@@ -81,7 +81,7 @@ public class FriendOfFriend implements Query {
                 .withConfig(QueryConfig.builder().withDatabase("neo4j").build())
                 .withParameters(Map.of("startId", candidateIds[iteration], "depth", ctx.config.depth())).execute();
 
-        rs.records().getFirst();
+        rs.records().size();
     }
 
     private long[] genIdsPostgres(Connection conn, int operations) {
