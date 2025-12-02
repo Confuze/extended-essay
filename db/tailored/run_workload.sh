@@ -17,8 +17,8 @@ OUT_DIR="/results/${DBMS}/workload-${WORKLOAD}"
 NODES_PATH="$BASE_DIR/dataset/nodes.txt"
 EDGES_PATH="$BASE_DIR/dataset/edges.txt"
 
-OPERATIONS=200000
-THREADS=4
+OPERATIONS=100000
+THREADS=8
 
 case "$COMMAND" in
 	load)

@@ -1,8 +1,9 @@
-package tailored.queries;
+package tailored.workloads;
 
 import org.neo4j.driver.Driver;
 import org.neo4j.driver.EagerResult;
 import org.neo4j.driver.QueryConfig;
+import org.neo4j.driver.Result;
 import tailored.BenchmarkContext;
 import tailored.Dbms;
 import tailored.Workload;
@@ -15,11 +16,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class Reciprocal implements Workload {
+public class ShortestPath implements Workload {
   private long[] startCandidateIds;
   private long[] endCandidateIds;
 
-  public Reciprocal(BenchmarkContext ctx) throws Exception {
+  public ShortestPath(BenchmarkContext ctx) throws Exception {
     if (ctx.config.dbms() == Dbms.POSTGRES) {
       long[][] pairs = genPairsPostgres(ctx.pgConn, ctx.config.operations());
       this.startCandidateIds = pairs[0];
@@ -43,52 +44,58 @@ public class Reciprocal implements Workload {
 
   private void executePostgres(BenchmarkContext ctx, int iteration) throws Exception {
     String sql = """
-        SELECT
-          EXISTS (
-            SELECT 1 FROM edges WHERE start_id = ? AND end_id = ?
-          ) AS forward_exists,
-          EXISTS (
-            SELECT 1 FROM edges WHERE start_id = ? AND end_id = ?
-          ) AS backward_exists
+        WITH RECURSIVE bfs AS (
+            SELECT
+                0 AS depth,
+                ? AS node_id
+            UNION ALL
+            SELECT
+                bfs.depth + 1,
+                e.end_id
+            FROM bfs
+            JOIN edges e ON e.start_id = bfs.node_id
+            WHERE bfs.depth < ?
+        )
+        SELECT MIN(depth) AS dist
+        FROM bfs
+        WHERE node_id = ?;
         """;
 
     assert ctx.pgConn != null;
     try (PreparedStatement ps = ctx.pgConn.prepareStatement(sql)) {
-      long u = startCandidateIds[iteration];
-      long v = endCandidateIds[iteration];
+      long startId = startCandidateIds[iteration];
+      long endId   = endCandidateIds[iteration];
 
-      ps.setLong(1, u);
-      ps.setLong(2, v);
-      ps.setLong(3, v);
-      ps.setLong(4, u);
+      ps.setLong(1, startId);
+      ps.setInt(2, ctx.config.depth()); // max depth
+      ps.setLong(3, endId);
 
       try (ResultSet rs = ps.executeQuery()) {
-        rs.next();
+        while (rs.next()) {}
       }
     }
   }
 
   private void executeNeo4j(BenchmarkContext ctx, int iteration) throws Exception {
-    String cypher = """
-          MATCH (u:Person {id: $startId})-[:FRIENDS_WITH]->(v:Person {id: $endId}),
-                (v)-[:FRIENDS_WITH]->(u)
-          RETURN u.id as startId, v.id as endId
-        """;
+    long startId = startCandidateIds[iteration];
+    long endId   = endCandidateIds[iteration];
 
-    long u = startCandidateIds[iteration];
-    long v = endCandidateIds[iteration];
+    String cypher =
+        "MATCH (u:Person {id: $u}), (v:Person {id: $v}) " +
+            "MATCH p = shortestPath((u)-[:FRIENDS_WITH*.." + ctx.config.depth() + "]->(v)) " +
+            "RETURN length(p) AS dist";
 
-    assert ctx.neoDriver != null;
-    EagerResult rs = ctx.neoDriver.executableQuery(cypher)
-        .withConfig(QueryConfig.builder().withDatabase("neo4j").build())
-        .withParameters(Map.of("startId", u, "endId", v))
-        .execute();
+    assert ctx.neoSession != null;
+    Result rs = ctx.neoSession.run(cypher, Map.of("u", startId, "v", endId));
 
-    rs.records().size();
+    while (rs.hasNext()) {
+      rs.next();
+    }
   }
 
+
   private long[][] genPairsPostgres(Connection conn, int operations) throws Exception {
-    String sql = "SELECT DISTINCT start_id FROM edges TABLESAMPLE SYSTEM (2)"; // WARN: This will work only for operation count < ~300k, need to make it dynamic
+    String sql = "SELECT DISTINCT start_id FROM edges TABLESAMPLE SYSTEM (40)"; // WARN: This will work only for operation count < ~350k, need to make it dynamic
 
     try (Statement st = conn.createStatement();
          ResultSet rs = st.executeQuery(sql)) {

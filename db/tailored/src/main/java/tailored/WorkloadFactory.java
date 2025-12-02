@@ -1,9 +1,9 @@
 package tailored;
 
-import tailored.queries.FriendOfFriend;
-import tailored.queries.Reciprocal;
-import tailored.queries.ShortestPath;
-import tailored.queries.Filtered;
+import tailored.workloads.FriendOfFriend;
+import tailored.workloads.Reciprocal;
+import tailored.workloads.ShortestPath;
+import tailored.workloads.Filtered;
 
 
 public class WorkloadFactory {
