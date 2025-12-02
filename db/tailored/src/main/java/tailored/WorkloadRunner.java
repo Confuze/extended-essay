@@ -13,6 +13,7 @@ public final class WorkloadRunner {
                        BenchmarkContext ctx,
                        int operations,
                        int threads) throws Exception {
+    System.out.println("Starting workload execution...");
     ExecutorService exec = Executors.newFixedThreadPool(threads);
     long[] latenciesNs = new long[operations];
     AtomicInteger index = new AtomicInteger(0);

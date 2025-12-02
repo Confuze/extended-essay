@@ -67,11 +67,8 @@ public class FriendOfFriend implements Workload {
     }
 
     private void executeNeo4j(BenchmarkContext ctx, int iteration) throws Exception {
-        String cypher = """
-                    MATCH p = (start:Person {id: $startId})-[:FRIENDS_WITH*1..5]->(fof)
-                    WHERE length(p) = $depth
-                    RETURN DISTINCT fof.id AS nodeId;
-                """;
+        String cypher = "MATCH p = (start:Person {id: $startId})-[:FRIENDS_WITH*" + ctx.config.depth() + "]->(fof) " +
+                "RETURN DISTINCT fof.id AS nodeId;";
 
         assert ctx.neoDriver != null;
         EagerResult rs = ctx.neoDriver.executableQuery(cypher)
