@@ -17,19 +17,19 @@ import java.util.stream.Stream;
 public class Loader {
   public static void runLoad(Dbms dbms, Path nodesPath, Path edgesPath) {
     BenchmarkConfig config = BenchmarkConfig.create(
-        dbms,
-        WorkloadType.FOF, // dummy, not used during load
-        1,
-        0,
-        0,
-        null
+            dbms,
+            WorkloadType.FOF, // dummy, not used during load
+            1,
+            0,
+            0,
+            null
     );
 
     try (BenchmarkContext ctx = ConnectionFactory.openContext(config)) {
       switch (dbms) {
-      case POSTGRES -> loadPostgres(ctx.pgConn, nodesPath, edgesPath);
-      case NEO4J -> loadNeo4j(ctx.neoDriver, nodesPath, edgesPath);
-      default -> throw new IllegalArgumentException("Unsupported DBMS: " + dbms);
+        case POSTGRES -> loadPostgres(ctx.pgConn, nodesPath, edgesPath);
+        case NEO4J -> loadNeo4j(ctx.neoDriver, nodesPath, edgesPath);
+        default -> throw new IllegalArgumentException("Unsupported DBMS: " + dbms);
       }
     } catch (Exception e) {
       throw new RuntimeException("Failed to load data", e);
@@ -43,27 +43,29 @@ public class Loader {
 
     conn.setAutoCommit(false);
 
+    // TODO: need to implement error handling for invalid paths.
+
     try (Statement st = conn.createStatement()) {
       st.executeUpdate("TRUNCATE TABLE edges");
       st.executeUpdate("TRUNCATE TABLE nodes");
     }
 
     String nodeSql = """
-        INSERT INTO nodes (
-          id,
-          public,
-          completion_pct,
-          gender,
-          region,
-          last_login,
-          registration,
-          age,
-          education,
-          smoking,
-          alcohol
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ON CONFLICT (id) DO NOTHING
-        """;
+            INSERT INTO nodes (
+              id,
+              public,
+              completion_pct,
+              gender,
+              region,
+              last_login,
+              registration,
+              age,
+              education,
+              smoking,
+              alcohol
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ON CONFLICT (id) DO NOTHING
+            """;
 
     try (PreparedStatement ps = conn.prepareStatement(nodeSql); Stream<String> lines = Files.lines(nodesPath)) {
       final int batchSize = 10_000;
@@ -167,6 +169,7 @@ public class Loader {
     }
 
     try (Session session = driver.session(SessionConfig.forDatabase("neo4j"))) {
+
       // wipe graph
       session.executeWrite(tx -> {
         tx.run("MATCH (n) DETACH DELETE n");
@@ -176,6 +179,7 @@ public class Loader {
       final int batchSize = 10_000;
       try (Stream<String> lines = Files.lines(nodesPath)) {
         List<Map<String, Object>> batch = new ArrayList<>(batchSize);
+        int batchCount = 1;
 
         for (String line : (Iterable<String>) lines::iterator) {
           String[] cols = line.split("\t", -1);
@@ -233,14 +237,17 @@ public class Loader {
           if (batch.size() >= batchSize) {
             flushNeoNodes(session, batch);
             batch.clear();
+            System.out.println("Batch " + batchCount++ + " completed");
           }
         }
         if (!batch.isEmpty()) {
           flushNeoNodes(session, batch);
+          System.out.println("Batch " + batchCount + " completed");
         }
       }
 
       final int edgeBatchSize = 10_000;
+      int batchCount2 = 0;
       try (Stream<String> lines = Files.lines(edgesPath)) {
         List<Map<String, Object>> batch = new ArrayList<>(edgeBatchSize);
 
@@ -258,10 +265,12 @@ public class Loader {
           if (batch.size() >= edgeBatchSize) {
             flushNeoEdges(session, batch);
             batch.clear();
+            System.out.println("Batch " + batchCount2++ + " completed");
           }
         }
         if (!batch.isEmpty()) {
           flushNeoEdges(session, batch);
+          System.out.println("Batch " + batchCount2 + " completed");
         }
       }
     }
@@ -270,20 +279,20 @@ public class Loader {
   private static void flushNeoNodes(Session session, List<Map<String, Object>> batch) {
     session.executeWrite(tx -> {
       tx.run("""
-        UNWIND $nodes AS n
-        MERGE (p:Person {id: n.id})
-        SET
-        p.public          = n.public,
-        p.completion_pct  = n.completion_pct,
-        p.gender          = n.gender,
-        p.region          = n.region,
-        p.last_login      = n.last_login,
-        p.registration    = n.registration,
-        p.age             = n.age,
-        p.education       = n.education,
-        p.smoking         = n.smoking,
-        p.alcohol         = n.alcohol
-      """, Map.of("nodes", batch));
+                UNWIND $nodes AS n
+                MERGE (p:Person {id: n.id})
+                SET
+                p.public          = n.public,
+                p.completion_pct  = n.completion_pct,
+                p.gender          = n.gender,
+                p.region          = n.region,
+                p.last_login      = n.last_login,
+                p.registration    = n.registration,
+                p.age             = n.age,
+                p.education       = n.education,
+                p.smoking         = n.smoking,
+                p.alcohol         = n.alcohol
+              """, Map.of("nodes", batch));
       return null;
     });
   }
@@ -291,10 +300,10 @@ public class Loader {
   private static void flushNeoEdges(Session session, List<Map<String, Object>> batch) {
     session.executeWrite(tx -> {
       tx.run("""
-          UNWIND $edges AS e
-          MATCH (u:Person {id: e.start}), (v:Person {id: e.end})
-          MERGE (u)-[:FRIENDS_WITH]->(v)
-          """, Map.of("edges", batch));
+              UNWIND $edges AS e
+              MATCH (u:Person {id: e.start}), (v:Person {id: e.end})
+              MERGE (u)-[:FRIENDS_WITH]->(v)
+              """, Map.of("edges", batch));
       return null;
     });
   }

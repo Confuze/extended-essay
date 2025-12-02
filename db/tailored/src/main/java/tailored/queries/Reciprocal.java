@@ -88,7 +88,7 @@ public class Reciprocal implements Workload {
   }
 
   private long[][] genPairsPostgres(Connection conn, int operations) throws Exception {
-    String sql = "SELECT start_id FROM (SELECT DISTINCT start_id FROM edges) as S ORDER BY random() LIMIT " + operations * 2;
+    String sql = "SELECT DISTINCT start_id FROM edges TABLESAMPLE SYSTEM (2)"; // WARN: This will work only for operation count < ~300k, need to make it dynamic
 
     try (Statement st = conn.createStatement();
          ResultSet rs = st.executeQuery(sql)) {

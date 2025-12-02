@@ -43,8 +43,6 @@ public final class ConnectionFactory {
       driver = GraphDatabase.driver(config.neo4jUri(), AuthTokens.basic(config.neo4jUser(), config.neo4jPassword()));
       driver.verifyConnectivity();
       System.out.println("Neo4j client connection created with " + config.neo4jUri());
-
-
     } catch (Exception e) {
       throw new Exception("Could not initialize connection to neo4j: " + e.toString(), e);
     }

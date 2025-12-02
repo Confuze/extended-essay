@@ -37,6 +37,7 @@ public final class WorkloadRunner {
             succeeded.incrementAndGet();
           } catch (Exception e) {
             failed.incrementAndGet();
+            System.err.println(e);
           }
           long end = System.nanoTime();
           latenciesNs[idx] = end - start;
